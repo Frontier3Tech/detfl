@@ -9,7 +9,15 @@
     "preview": "bunx --bun vite preview"
   },
   "dependencies": {
+    "@apophis-sdk/core": "^0.3.1",
+    "@apophis-sdk/cosmos": "^0.3.1",
+    "@apophis-sdk/cosmos-signers": "^0.3.1",
+    "@apophis-sdk/cosmwasm": "^0.3.1",
+    "@kiruse/cosmos-components": "^0.1.9",
+    "@preact/signals": "^2.0.5",
+    "@scure/base": "^1.2.5",
     "@tailwindcss/postcss": "^4.1.7",
+    "classnames": "^2.5.1",
     "preact": "^10.19.6"
   },
   "devDependencies": {

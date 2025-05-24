@@ -1,6 +1,10 @@
+import { route } from './routing';
+import Enterprise from './components/Enterprise';
+import NotFound from './components/NotFound';
+
 export default function App() {
   return (
-    <div class="min-h-screen flex flex-col bg-gray-50">
+    <div class="min-h-screen w-full flex flex-col bg-gray-50">
       {/* Header */}
       <header class="bg-white shadow-sm">
         <div class="max-w-7xl mx-auto px-4 py-4">
@@ -13,23 +17,14 @@ export default function App() {
       <nav class="bg-gray-800 text-white">
         <div class="max-w-7xl mx-auto px-4">
           <div class="flex space-x-4 h-10 items-center">
-            <a href="#">Home</a>
-            <a href="#/recover/enterprise/tokens">Recover Enterprise Tokens</a>
-            <a href="#/recover/enterprise/nfts">Recover Enterprise NFTs</a>
+            <a href="#/enterprise">Recover Enterprise NFTs</a>
           </div>
         </div>
       </nav>
 
       {/* Main Content */}
       <main class="flex-grow">
-        <div class="max-w-7xl mx-auto px-4 py-8">
-          <div class="bg-white rounded-lg shadow p-6">
-            <h2 class="text-xl font-semibold mb-4">Main Content Area</h2>
-            <p class="text-gray-600">
-              Your content will go here. This is a placeholder for the main application content.
-            </p>
-          </div>
-        </div>
+        <Routes />
       </main>
 
       {/* Footer */}
@@ -45,4 +40,15 @@ export default function App() {
       </footer>
     </div>
   )
+}
+
+function Routes() {
+  switch (route.value) {
+    case '':
+    case '/':
+    case '/enterprise':
+      return <Enterprise />;
+    default:
+      return <NotFound />;
+  }
 }
