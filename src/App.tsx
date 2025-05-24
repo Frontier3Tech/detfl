@@ -17,7 +17,7 @@ export default function App() {
       <nav class="bg-gray-800 text-white">
         <div class="max-w-7xl mx-auto px-4">
           <div class="flex space-x-4 h-10 items-center">
-            <a href="#/enterprise">Recover Enterprise NFTs</a>
+            <a href="#/enterprise">Enterprise</a>
           </div>
         </div>
       </nav>

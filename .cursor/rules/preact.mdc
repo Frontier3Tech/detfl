@@ -1,0 +1,8 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+Always prefer `useSignal` from the `@preact/signals` package over `useState`.
+Always prefer importing from `preact/hooks` over `preact/compat`.
+Always import the `classnames` package as `cx`.
