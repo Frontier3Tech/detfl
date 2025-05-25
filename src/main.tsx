@@ -1,5 +1,6 @@
 import { Apophis } from '@apophis-sdk/core';
 import { DefaultCosmWasmMiddlewares } from '@apophis-sdk/cosmwasm';
+import { registerCosmosSigners } from '@apophis-sdk/cosmos-signers';
 import { CosmosComponents, reconnectSigner } from '@kiruse/cosmos-components';
 import '@kiruse/cosmos-components/preact.js';
 import { render } from 'preact';
@@ -11,6 +12,7 @@ async function initialize() {
   try {
     Apophis.use(...DefaultCosmWasmMiddlewares);
     CosmosComponents.register();
+    registerCosmosSigners('c82fda1a49f08badc3cf3e0acea65036');
 
     const network = await getNetwork();
     reconnectSigner([network]);
