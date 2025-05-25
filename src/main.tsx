@@ -11,6 +11,8 @@ import './styles/main.sass';
 async function initialize() {
   try {
     Apophis.use(...DefaultCosmWasmMiddlewares);
+    await Apophis.init();
+
     CosmosComponents.register();
     registerCosmosSigners('c82fda1a49f08badc3cf3e0acea65036');
 

@@ -1,0 +1,66 @@
+import { signals } from '@apophis-sdk/core';
+import { Cosmos } from '@apophis-sdk/cosmos';
+import { Contract, CosmWasm } from '@apophis-sdk/cosmwasm';
+import { toast } from '@kiruse/cosmos-components';
+import classNames from 'classnames';
+import { getNetwork } from '~/config';
+
+const LIONDAO_MEMBERSHIP_ADDRESS = 'terra1fv92cnlenl8am5vpcamsxpr6l7y9ytpvlhery9ncy95jjxh8pmlsass2rq';
+const ROAR_TOKEN_ADDRESS = 'terra1lxx40s29qvkrcj8fsa3yzyehy7w50umdvvnls2r830rys6lu2zns63eelv';
+
+export default function EnterpriseDev() {
+  const handleStake = async () => {
+    const address = signals.address.value;
+    const signer = signals.signer.value;
+    if (!signer || !address) return toast.error('Please connect your wallet');
+
+    const network = await getNetwork();
+    if (!network) throw new Error('Network not found');
+
+    const tx = Cosmos.tx([
+      new Contract.Execute({
+        sender: address,
+        contract: ROAR_TOKEN_ADDRESS,
+        msg: CosmWasm.toBinary({
+          send: {
+            contract: LIONDAO_MEMBERSHIP_ADDRESS,
+            amount: '1000000',
+            msg: CosmWasm.toBinary({
+              stake: {
+                user: address,
+              },
+            }),
+          },
+        }),
+      }),
+    ]);
+
+    await tx.estimateGas(network, signer, true);
+    await signer.sign(network, tx);
+    await tx.broadcast();
+    toast.success('Stake successful');
+  };
+
+  return (
+    <div>
+      <h2>DevTools</h2>
+      <div>
+        <p className="mb-4 text-gray-700">
+          Stake 1 ROAR in the LionDAO for testing & development purposes.
+        </p>
+        <button
+          onClick={handleStake}
+          className={classNames(
+            'px-4 py-2',
+            'bg-blue-500 hover:bg-blue-600',
+            'text-white font-medium',
+            'rounded-md',
+            'transition-colors'
+          )}
+        >
+          Stake
+        </button>
+      </div>
+    </div>
+  );
+}

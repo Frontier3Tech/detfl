@@ -9,6 +9,7 @@ import cx from 'classnames';
 import { getNetwork } from '~/config';
 import { useAsyncComputed } from '~/hooks/useAsyncComputed';
 import { impersonateAddress } from '~/state';
+import EnterpriseDev from './EnterpriseDev';
 
 type RecoveryType = 'token' | 'nft' | 'unknown';
 type MembershipContractDetails = {
@@ -180,6 +181,12 @@ export default function Enterprise() {
             ? <TokenRecovery address={recoveryType.value.address} />
             : <NftRecovery address={recoveryType.value.address} />
           }
+        </div>
+      )}
+
+      {import.meta.env.VITE_NODE_ENV === 'development' && (
+        <div class="mt-6 bg-white rounded-lg shadow p-6">
+          <EnterpriseDev />
         </div>
       )}
     </div>
