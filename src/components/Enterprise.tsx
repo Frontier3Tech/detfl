@@ -274,7 +274,7 @@ function TokenRecovery({ address }: { address: string }) {
       }));
 
       const { claims: claimable } = await CosmWasm.query.smart<{ claims: TokenClaim[] }>(network, address, CosmWasm.toBinary({
-        claims: {
+        releasable_claims: {
           user: userAddress.value,
         },
       }));
