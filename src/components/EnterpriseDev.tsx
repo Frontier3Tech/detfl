@@ -35,10 +35,15 @@ export default function EnterpriseDev() {
       }),
     ]);
 
-    await tx.estimateGas(network, signer, true);
-    await signer.sign(network, tx);
-    await tx.broadcast();
-    toast.success('Stake successful');
+    try {
+      await tx.estimateGas(network, signer, true);
+      await signer.sign(network, tx);
+      await tx.broadcast();
+      await Cosmos.ws(network).expectTx(tx, 30000);
+      toast.success('Staking successful');
+    } catch (error) {
+      toast.errorlink(error);
+    }
   };
 
   return (

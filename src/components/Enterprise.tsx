@@ -8,7 +8,7 @@ import { bech32 } from '@scure/base';
 import cx from 'classnames';
 import { getNetwork } from '~/config';
 import { useAsyncComputed } from '~/hooks/useAsyncComputed';
-import { impersonateAddress } from '~/state';
+import { impersonateAddress, refreshCounter } from '~/state';
 import EnterpriseDev from './EnterpriseDev';
 
 type RecoveryType = 'token' | 'nft' | 'unknown';
@@ -86,6 +86,9 @@ export default function Enterprise() {
 
         {/* Check address input */}
         <div class="mb-6 space-y-4">
+          <p class="text-sm text-gray-600 mb-2">
+            You can check any arbitrary address, but if you wish to unstake or claim you must connect your wallet and keep this field empty.
+          </p>
           <div>
             <label for="check-address" class="block text-sm font-medium text-gray-700 mb-1">
               Check address
@@ -248,7 +251,6 @@ type TokenClaim = {
 const defaultTokenStake: TokenStake = { total: 0n, pending: [], claimable: [] };
 
 function TokenRecovery({ address }: { address: string }) {
-  const refreshCounter = useSignal(0);
   const userAddress = useComputed(() => impersonateAddress.value || apophisSignals.address.value);
 
   const stake = useAsyncComputed<TokenStake>(defaultTokenStake, async () => {
@@ -338,11 +340,14 @@ function TokenRecovery({ address }: { address: string }) {
                         }),
                       }),
                     ]);
+
                     await tx.estimateGas(network, apophisSignals.signer.value, true);
                     await apophisSignals.signer.value.sign(network, tx);
                     await tx.broadcast();
+                    await Cosmos.ws(network).expectTx(tx, 30000);
+
                     refreshCounter.value++;
-                    toast.success('Unstaking request submitted');
+                    toast.success('Unstaking request submitted.');
                   } catch (error) {
                     toast.errorlink(error);
                   }
@@ -378,9 +383,10 @@ function TokenRecovery({ address }: { address: string }) {
                     await tx.estimateGas(network, apophisSignals.signer.value, true);
                     await apophisSignals.signer.value.sign(network, tx);
                     await tx.broadcast();
+                    await Cosmos.ws(network).expectTx(tx, 30000);
 
                     refreshCounter.value++;
-                    toast.success('Claiming tokens');
+                    toast.success('Tokens claimed. Check your wallet!');
                   } catch (error) {
                     toast.errorlink(error);
                   }
