@@ -197,7 +197,7 @@ export default function Enterprise() {
 }
 
 function NftRecovery({ address }: { address: string }) {
-  const stake = useAsyncComputed<string[]>([], async () => {
+  useAsyncComputed<string[]>([], async () => {
     try {
       const network = apophisSignals.network.value as CosmosNetworkConfig;
       if (!network) throw new Error('Network not found');
