@@ -25,8 +25,13 @@ type ReleaseAtHeight = {
   height: string;
 }
 
-const LION_DAO_ADDRESS = 'terra17c6ts8grcfrgquhj3haclg44le8s7qkx6l2yx33acguxhpf000xqhnl3je';
-const PIXELIONS_DAO_ADDRESS = 'terra1exj6fxvrg6xuukgx4l90ujg3vh6420540mdr6scrj62u2shk33sqnp0stl';
+const KNOWN_ADDRESSES = {
+  'Lion DAO': 'terra17c6ts8grcfrgquhj3haclg44le8s7qkx6l2yx33acguxhpf000xqhnl3je',
+  'pixeLions DAO': 'terra1exj6fxvrg6xuukgx4l90ujg3vh6420540mdr6scrj62u2shk33sqnp0stl',
+  'pyROARmaniacs DAO': 'terra16vl35edwt5c2904l7zlezv5kr6fwzjk78mc6wmf9rzutxxc7nfksymzuce',
+  'Orne DAO': 'terra1x8wyy2tmvwn5nm23maxry80mkpxn65x2ghs0q3ktnk5y62wj5x7s5vsg79',
+  'Sailing the Seas DAO': 'terra1ydkvywwnl3j84tcntcwjmzgjc5u2vrqpcyjzn3slvwcpjke6nzhstm5a0g',
+};
 
 export default function Enterprise() {
   const treasuryAddress = useSignal('');
@@ -158,22 +163,28 @@ export default function Enterprise() {
                 Please enter a valid Terra address
               </p>
             )}
-          </div>
-
-          {/* Address shortcut buttons */}
-          <div class="flex space-x-4">
-            <button
-              onClick={() => treasuryAddress.value = LION_DAO_ADDRESS}
-              class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-            >
-              Lion DAO
-            </button>
-            <button
-              onClick={() => treasuryAddress.value = PIXELIONS_DAO_ADDRESS}
-              class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-            >
-              pixeLions DAO
-            </button>
+            <div class="mt-2">
+              <label for="known-addresses" class="block text-sm font-medium text-gray-700 mb-1">
+                Known Addresses
+              </label>
+              <select
+                id="known-addresses"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                onChange={(e) => {
+                  const selectedAddress = e.currentTarget.value;
+                  if (selectedAddress) {
+                    treasuryAddress.value = selectedAddress;
+                  }
+                }}
+              >
+                <option value="">Select a known address</option>
+                {Object.entries(KNOWN_ADDRESSES).map(([name, address]) => (
+                  <option key={address} value={address}>
+                    {name}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
       </div>
