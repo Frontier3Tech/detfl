@@ -8,7 +8,7 @@ import { bech32 } from '@scure/base';
 import cx from 'classnames';
 import { getNetwork } from '~/config';
 import { useAsyncComputed } from '~/hooks/useAsyncComputed';
-import { impersonateAddress, refreshCounter } from '~/state';
+import { impersonateAddress, refreshCounter, useLedger } from '~/state';
 import EnterpriseDev from './EnterpriseDev';
 
 type RecoveryType = 'token' | 'nft' | 'unknown';
@@ -361,6 +361,7 @@ function TokenRecovery({ address }: { address: string }) {
                     toast.success('Unstaking request submitted.');
                   } catch (error) {
                     toast.errorlink(error);
+                    console.error(error);
                   }
                 }}
                 disabled={stakedTokens.value.equals(new Decimal(0))}
@@ -400,6 +401,7 @@ function TokenRecovery({ address }: { address: string }) {
                     toast.success('Tokens claimed. Check your wallet!');
                   } catch (error) {
                     toast.errorlink(error);
+                    console.error(error);
                   }
                 }}
                 disabled={claimableTokens.value.equals(new Decimal(0))}
@@ -408,7 +410,18 @@ function TokenRecovery({ address }: { address: string }) {
                 Claim
               </button>
             </div>
-            <p class="text-gray-600">
+            <div className="mt-4">
+              <label className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={useLedger.value}
+                  onChange={(e) => useLedger.value = e.currentTarget.checked}
+                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                />
+                <span className="text-sm text-gray-700">Use Ledger</span>
+              </label>
+            </div>
+            <p className="text-gray-600">
               Note that the balance may be off if the token deviates from the standard 6 decimals.
             </p>
           </>
