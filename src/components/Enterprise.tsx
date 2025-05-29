@@ -351,7 +351,7 @@ function TokenRecovery({ address }: { address: string }) {
                           },
                         },
                       }),
-                    ]);
+                    ], { encoding: useLedger.value ? 'amino' : 'protobuf' });
 
                     await tx.estimateGas(network, apophisSignals.signer.value, true);
                     await apophisSignals.signer.value.sign(network, tx);
@@ -392,7 +392,7 @@ function TokenRecovery({ address }: { address: string }) {
                           claim: {},
                         },
                       }),
-                    ]);
+                    ], { encoding: useLedger.value ? 'amino' : 'protobuf' });
 
                     await tx.estimateGas(network, apophisSignals.signer.value, true);
                     await apophisSignals.signer.value.sign(network, tx);
