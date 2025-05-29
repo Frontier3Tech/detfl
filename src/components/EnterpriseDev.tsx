@@ -1,4 +1,5 @@
 import { signals } from '@apophis-sdk/core';
+import { toBase64 } from '@apophis-sdk/core/utils.js';
 import { Cosmos } from '@apophis-sdk/cosmos';
 import { Contract, CosmWasm } from '@apophis-sdk/cosmwasm';
 import { toast } from '@kiruse/cosmos-components';
@@ -22,7 +23,7 @@ export default function EnterpriseDev() {
       new Contract.Execute({
         sender: address,
         contract: ROAR_TOKEN_ADDRESS,
-        msg: CosmWasm.toBinary({
+        msg: {
           send: {
             contract: LIONDAO_MEMBERSHIP_ADDRESS,
             amount: '1000000',
@@ -32,15 +33,17 @@ export default function EnterpriseDev() {
               },
             }),
           },
-        }),
+        },
+        funds: [],
       }),
     ], { encoding: useLedger.value ? 'amino' : 'protobuf' });
 
     try {
       await tx.estimateGas(network, signer, true);
-      console.log('tx', tx.signDoc(network, signer));
       await signer.sign(network, tx);
-      await tx.broadcast();
+      // await tx.broadcast();
+      console.log(toBase64(tx.bytes()));
+      console.log(await Cosmos.broadcast(network, tx, false));
       await Cosmos.ws(network).expectTx(tx, 30000);
       toast.success('Staking successful');
     } catch (error) {

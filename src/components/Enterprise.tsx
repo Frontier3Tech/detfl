@@ -214,11 +214,11 @@ function NftRecovery({ address }: { address: string }) {
       if (!network) throw new Error('Network not found');
       if (!address || !apophisSignals.address.value) return [];
 
-      const { total_user_stake, tokens } = await CosmWasm.query.smart<any>(network, address, CosmWasm.toBinary({
+      const { total_user_stake, tokens } = await CosmWasm.query.smart<any>(network, address, {
         user_stake: {
           user: apophisSignals.address.value,
         },
-      }));
+      });
       console.log('Staked NFTs:', total_user_stake, tokens);
       return tokens;
     } catch (error) {
@@ -272,23 +272,23 @@ function TokenRecovery({ address }: { address: string }) {
       if (!address) throw new Error('Failed to get Membership Contract');
       if (!userAddress.value) throw new Error('Please provide an address');
 
-      const { weight } = await CosmWasm.query.smart<any>(network, address, CosmWasm.toBinary({
+      const { weight } = await CosmWasm.query.smart<any>(network, address, {
         user_weight: {
           user: userAddress.value,
         },
-      }));
+      });
 
-      const { claims: pending } = await CosmWasm.query.smart<{ claims: TokenClaim[] }>(network, address, CosmWasm.toBinary({
+      const { claims: pending } = await CosmWasm.query.smart<{ claims: TokenClaim[] }>(network, address, {
         claims: {
           user: userAddress.value,
         },
-      }));
+      });
 
-      const { claims: claimable } = await CosmWasm.query.smart<{ claims: TokenClaim[] }>(network, address, CosmWasm.toBinary({
+      const { claims: claimable } = await CosmWasm.query.smart<{ claims: TokenClaim[] }>(network, address, {
         releasable_claims: {
           user: userAddress.value,
         },
-      }));
+      });
 
       return {
         total: BigInt(weight),
@@ -344,11 +344,12 @@ function TokenRecovery({ address }: { address: string }) {
                       new Contract.Execute({
                         sender: apophisSignals.address.value,
                         contract: address,
-                        msg: CosmWasm.toBinary({
+                        funds: [],
+                        msg: {
                           unstake: {
                             amount: stake.value.total.valueOf().toString(),
                           },
-                        }),
+                        },
                       }),
                     ]);
 
@@ -386,9 +387,10 @@ function TokenRecovery({ address }: { address: string }) {
                       new Contract.Execute({
                         sender: apophisSignals.address.value,
                         contract: address,
-                        msg: CosmWasm.toBinary({
+                        funds: [],
+                        msg: {
                           claim: {},
-                        }),
+                        },
                       }),
                     ]);
 
@@ -432,13 +434,13 @@ function TokenRecovery({ address }: { address: string }) {
 }
 
 async function checkVersion(network: CosmosNetworkConfig, govctrlContract: string) {
-  const { enterprise_contract: enterpriseContract } = await CosmWasm.query.smart<any>(network, govctrlContract, CosmWasm.toBinary({
+  const { enterprise_contract: enterpriseContract } = await CosmWasm.query.smart<any>(network, govctrlContract, {
     config: {},
-  }));
+  });
 
-  const { dao_version } = await CosmWasm.query.smart<any>(network, enterpriseContract, CosmWasm.toBinary({
+  const { dao_version } = await CosmWasm.query.smart<any>(network, enterpriseContract, {
     dao_info: {},
-  }));
+  });
 
   const ver = `${dao_version.major}.${dao_version.minor}.${dao_version.patch}`;
   if (ver !== '1.2.1') toast.warn('This DAO is not on version 1.2.1. This tool might not work as expected.');
@@ -446,15 +448,15 @@ async function checkVersion(network: CosmosNetworkConfig, govctrlContract: strin
 }
 
 async function getAdminContract(network: CosmosNetworkConfig, treasuryAddress: string) {
-  const { admin } = await CosmWasm.query.smart<any>(network, treasuryAddress, CosmWasm.toBinary({
+  const { admin } = await CosmWasm.query.smart<any>(network, treasuryAddress, {
     config: {},
-  }));
+  });
   return admin;
 }
 
 async function getMembershipContract(network: CosmosNetworkConfig, adminContract: string) {
-  const { dao_membership_contract } = await CosmWasm.query.smart<any>(network, adminContract, CosmWasm.toBinary({
+  const { dao_membership_contract } = await CosmWasm.query.smart<any>(network, adminContract, {
     gov_config: {},
-  }));
+  });
   return dao_membership_contract;
 }
